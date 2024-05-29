@@ -10,9 +10,8 @@
 \usepackage{multirow}
 \usepackage{booktabs}
 
-\title{Machine Learning and Data Mining project:\\chosen-project-option}
-\author[1]{First-name-1 Last-name-2}
-\author[2]{First-name-1 Last-name-2}
+\title{Machine Learning and Data Mining project:\\Leaf identification}
+\author[1]{Michele Scomina}
 \affil[1]{
     problem statement,
     solution design,
@@ -20,14 +19,7 @@
     data gathering,
     writing
 }
-\affil[2]{
-    problem statement,
-    solution design,
-    solution development,
-    data gathering,
-    writing
-}
-\date{Course of AA $x$-$x+1$ - Name of the CdS}
+\date{Course of AA $2023$-$2024$ - DIA - Ingegneria Elettronica e Informatica (IN20)}
 
 
 
@@ -38,36 +30,19 @@
 
 
 \section{Problem statement}
-Lorem ipsum~\cite{james2013introduction} dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
+\subsection{Goal of the project}
+The goal of this project consists in identifying the type of leaf based on a set of provided attributes.
+The given solution must be able to classify the leaves in one of 40 categories of leaves.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
-
+\subsection{Formal definitions}
+the problem can be formally defined as follows:
+\begin{itemize}
+    \item $X$ is the set of all possible leaves. Every element $x \in X$ is a leaf defined by a vector of 14 attributes.
+    \item $Y$ is the set of all possible categories of leaves. Every element $y \in Y$ is a category of leaves, defined as an integer value $\in [1,40]$ .
+    \item Let $f: X \to Y$ be the function that assigns to each leaf its category.
+    \item Let $D = \{(x_1, y_1), \ldots, (x_n, y_n)\}$ be the training set, where $x_i \in X$ and $y_i \in Y$.
+    \item The goal is to find a function $h: X \to Y$ that approximates $f$.
+\end{itemize}
 
 
 \section{Assessment and performance indexes}
