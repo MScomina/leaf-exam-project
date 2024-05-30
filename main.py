@@ -1,9 +1,10 @@
 #
 #   Code for the "Introduction to Machine Learning and Evolutonary Robotics" project.
 #
-
-from utils.training_utils import grid_search, cross_validate, train_model, test_model
 from utils.data_utils import load_data, split_data
+from utils.plot_utils import plot_confusion_matrix
+from utils.training_utils import grid_search, cross_validate, train_model, test_model
+
 import numpy as np
 import random
 
@@ -36,6 +37,7 @@ def training_script():
     print(f"Random Forest Accuracy: {rf_accuracy}")
     print(f"Random Forest Classification Report:\n {rf_report}")
     print(f"Random Forest AUC: {rf_auc}")
+    plot_confusion_matrix(rf_cm, n_classes=30, plot_name="Random Forest")
 
     print("Training SVC")
     _, best_svc_params, _ = grid_search("SVC", SVC_PARAMS, X, y, cv_folds=CV_FOLDS)
@@ -45,6 +47,7 @@ def training_script():
     print(f"SVC Accuracy: {svc_accuracy}")
     print(f"SVC Classification Report:\n {svc_report}")
     print(f"SVC AUC: {svc_auc}")
+    plot_confusion_matrix(svc_cm, n_classes=30, plot_name="SVC")
 
     print("Training Naive Bayes")
     best_nb = cross_validate("NaiveBayes", X, y, cv_folds=CV_FOLDS)
@@ -54,6 +57,7 @@ def training_script():
     print(f"Naive Bayes Accuracy: {nb_accuracy}")
     print(f"Naive Bayes Classification Report:\n {nb_report}")
     print(f"Naive Bayes AUC: {nb_auc}")
+    plot_confusion_matrix(nb_cm, n_classes=30, plot_name="Naive Bayes")
 
 
 

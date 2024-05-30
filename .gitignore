@@ -165,3 +165,5 @@ report/*
 # Downloaded datasets
 dataset/*
 
+# Plots
+plots/*

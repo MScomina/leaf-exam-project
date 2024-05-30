@@ -31,15 +31,15 @@
 
 \section{Problem statement}
 \subsection{Goal of the project}
-The goal of this project consists in identifying the type of leaf based on a set of provided attributes.
-The given solution must be able to classify the leaves in one of 40 categories of leaves.
+The goal of this project is to identify the type of leaf based on a group of features, which are derived from both the shape and texture of the leaf.
+The given solution must be able to classify the leaves in one of 30 categories of leaves.
 
 \subsection{Formal definitions}
-the problem can be formally defined as follows:
+The problem can be formally defined as follows:
 \begin{itemize}
     \item $X$ is the set of all possible leaves. Every element $x \in X$ is a leaf defined by a vector of 14 attributes.
-    \item $Y$ is the set of all possible categories of leaves. Every element $y \in Y$ is a category of leaves, defined as an integer value $\in [1,40]$ .
-    \item Let $f: X \to Y$ be the function that assigns to each leaf its category.
+    \item $Y$ is the set of all possible categories of leaves. Every element $y \in Y = \{0, 1, 2, ..., 29\}$ is a category of leaves.
+    \item $f: X \to Y$ is the function that assigns each leaf to its category.
     \item Let $D = \{(x_1, y_1), \ldots, (x_n, y_n)\}$ be the training set, where $x_i \in X$ and $y_i \in Y$.
     \item The goal is to find a function $h: X \to Y$ that approximates $f$.
 \end{itemize}
