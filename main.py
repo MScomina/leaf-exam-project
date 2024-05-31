@@ -9,57 +9,45 @@ import numpy as np
 import random
 
 RANDOM_FOREST_PARAMS = {
-    'n_estimators': [10, 20, 30, 40, 50],
-    'max_depth': [1, 3, 5, 10, 20]
+    'n_estimators': [10, 25, 50, 100, 200, 500, 1000],
+    'max_depth': [1, 3, 5, 10, 25, 50]
 }
 
 SVC_PARAMS = {
     'C': [0.1, 0.5, 1.0, 10.0, 100.0, 1000.0],
-    'kernel': ['rbf', 'linear', 'poly', 'sigmoid'],
-    'degree': [2, 3, 4, 5],
-    'gamma': ['scale', 'auto']
+    'kernel': ['rbf', 'linear', 'poly', 'sigmoid']
 }
+
+NB_PARAMS = {}
 
 CV_FOLDS = 5
 TEST_RATIO = 0.2
 SEED = 314
 
-nb_params = {}
+def training_script(verbose=False):
 
-def training_script():
     X, y = load_data("dataset/leaf.csv")
     x_train, x_test, y_train, y_test = split_data(X, y, test_size=TEST_RATIO, random_state=SEED)
-    print("Training Random Forest")
-    _, best_rf_params, _ = grid_search("RandomForest", RANDOM_FOREST_PARAMS, x_train, y_train, cv_folds=CV_FOLDS)
-    print(f"Best Random Forest Params: {best_rf_params}")
-    random_forest_model = train_model("RandomForest", best_rf_params, x_train, y_train)
-    rf_accuracy, rf_cm, rf_report, rf_auc = test_model(random_forest_model, x_test, y_test)
-    print(f"Random Forest Accuracy: {rf_accuracy}")
-    print(f"Random Forest Classification Report:\n {rf_report}")
-    print(f"Random Forest AUC: {rf_auc}")
-    plot_confusion_matrix(rf_cm, n_classes=30, plot_name="Random Forest")
+    
+    for model_name, model_params in zip(["RandomForest", "SVC", "NaiveBayes"], [RANDOM_FOREST_PARAMS, SVC_PARAMS, NB_PARAMS]):
+        
+        print(f"Training {model_name}")
 
-    print("Training SVC")
-    _, best_svc_params, _ = grid_search("SVC", SVC_PARAMS, X, y, cv_folds=CV_FOLDS)
-    print(f"Best SVC Params: {best_svc_params}")
-    svc_model = train_model("SVC", best_svc_params, x_train, y_train)
-    svc_accuracy, svc_cm, svc_report, svc_auc = test_model(svc_model, x_test, y_test)
-    print(f"SVC Accuracy: {svc_accuracy}")
-    print(f"SVC Classification Report:\n {svc_report}")
-    print(f"SVC AUC: {svc_auc}")
-    plot_confusion_matrix(svc_cm, n_classes=30, plot_name="SVC")
-
-    print("Training Naive Bayes")
-    best_nb = cross_validate("NaiveBayes", X, y, cv_folds=CV_FOLDS)
-    print(f"Average Naive Bayes Accuracy: {best_nb[0]}")
-    nb_model = train_model("NaiveBayes", nb_params, x_train, y_train)
-    nb_accuracy, nb_cm, nb_report, nb_auc = test_model(nb_model, x_test, y_test)
-    print(f"Naive Bayes Accuracy: {nb_accuracy}")
-    print(f"Naive Bayes Classification Report:\n {nb_report}")
-    print(f"Naive Bayes AUC: {nb_auc}")
-    plot_confusion_matrix(nb_cm, n_classes=30, plot_name="Naive Bayes")
-
-
+        if model_name != "NaiveBayes":
+            _, best_params, _ = grid_search(model_name, model_params, x_train, y_train, cv_folds=CV_FOLDS)
+            print(f"Best {model_name} Params: {best_params}")
+        else:
+            best_params = {}
+            best_nb = cross_validate(model_name, x_train, y_train, cv_folds=CV_FOLDS)
+            print(f"Average {model_name} Accuracy: {best_nb[0]}")
+        
+        model = train_model(model_name, best_params, x_train, y_train)
+        accuracy, cm, report, auc = test_model(model, x_test, y_test)
+        print(f"{model_name} weighted Accuracy: {accuracy}")
+        if verbose:
+            print(f"{model_name} Classification Report:\n {report}")
+        print(f"{model_name} AUC: {auc}")
+        plot_confusion_matrix(cm, n_classes=30, plot_name=model_name)
 
 def main():
     random.seed(SEED)

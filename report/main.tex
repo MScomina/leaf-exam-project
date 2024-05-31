@@ -37,34 +37,26 @@ The given solution must be able to classify the leaves in one of 30 categories o
 \subsection{Formal definitions}
 The problem can be formally defined as follows:
 \begin{itemize}
-    \item $X$ is the set of all possible leaves. Every element $x \in X$ is a leaf defined by a vector of 14 attributes.
-    \item $Y$ is the set of all possible categories of leaves. Every element $y \in Y = \{0, 1, 2, ..., 29\}$ is a category of leaves.
-    \item $f: X \to Y$ is the function that assigns each leaf to its category.
+    \item Let $X$ be the set of all possible leaves. Every element $x \in X$ is a leaf defined by a 14-dimensional attribute vector, representing various shape and texture features of the leaf.
+    \item Let $Y$ be the set of all possible categories of leaves. Every element $y \in Y = \{0, 1, 2, ..., 29\}$ represents a unique category of leaves.
+    \item Let $f: X \to Y$ be the function that assigns each leaf to its category based on its attributes.
     \item Let $D = \{(x_1, y_1), \ldots, (x_n, y_n)\}$ be the training set, where $x_i \in X$ and $y_i \in Y$.
-    \item The goal is to find a function $h: X \to Y$ that approximates $f$.
+    \item The goal is to find a function $f_{\text{predict}}: X \times M \to P_{Y}$ that approximates $f$ as closely as possible, effectively classifying the leaves into their correct categories, where $M$ is a model learned from the training set $D$ and $P_{Y}$ is the set of all discrete probability distributions over $Y$.
 \end{itemize}
 
 
 \section{Assessment and performance indexes}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
+%The function $f_{predict}$ will be implemented using three different machine learning algorithms, in order to determine which one performs best:
+%\begin{itemize}
+%    \item Random Forest, where $M = \{T_1, T_2,... T_n\}$ with each $T_i \in T_{(\{1,...,4\}\times\mathbb{R})\cup P_{Y}}$
+%    \item Support Vector Classifier (SVC), where $M = \{w, b\}$ such that $w \in \mathbb{R}^{14}$ and $b \in \mathbb{R}$.
+%    \item Naive Bayes, where $M = \{P(Y), P(X|Y)\}$, with $P(Y)$ being the prior probabilities of the classes in $Y$, and $P(X|Y)$ being the likelihood of the features in $X$ given the classes in $Y$.
+%\end{itemize}
 
-\begin{equation}
-    E=mc^2
-\end{equation}
+Since classes are balanced, but are composed of only a few samples, there's a risk of ill-defined metrics, as the model might not be able to predict some classes and not have a defined precision, recall or F1-score for those classes.
+Therefore, the weighted accuracy and the AUC (One-VS-Rest) will be used as performance indexes.
 
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
+
 
 
 
