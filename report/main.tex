@@ -9,6 +9,7 @@
 \usepackage{url}
 \usepackage{multirow}
 \usepackage{booktabs}
+\usepackage{hyperref}
 
 \title{Machine Learning and Data Mining project:\\Leaf identification}
 \author[1]{Michele Scomina}
@@ -41,7 +42,7 @@ The problem can be formally defined as follows:
     \item Let $Y$ be the set of all possible categories of leaves. Every element $y \in Y = \{0, 1, 2, ..., 29\}$ represents a unique category of leaves.
     \item Let $f: X \to Y$ be the function that assigns each leaf to its category based on its attributes.
     \item Let $D = \{(x_1, y_1), \ldots, (x_n, y_n)\}$ be the training set, where $x_i \in X$ and $y_i \in Y$.
-    \item The goal is to find a function $f_{\text{predict}}: X \times M \to P_{Y}$ that approximates $f$ as closely as possible, effectively classifying the leaves into their correct categories, where $M$ is a model learned from the training set $D$ and $P_{Y}$ is the set of all discrete probability distributions over $Y$.
+    \item The goal is to learn a model $M$ from the dataset $D$ such that the argmax of $f'_{\text{predict}}: X \times M \to P_{Y}$\footnote{...where $P_{Y}$ is the set of all possible probability distributions over $Y$.} approximates $f$ as closely as possible, effectively classifying the leaves into their correct categories.
 \end{itemize}
 
 
@@ -52,60 +53,36 @@ The problem can be formally defined as follows:
 %    \item Support Vector Classifier (SVC), where $M = \{w, b\}$ such that $w \in \mathbb{R}^{14}$ and $b \in \mathbb{R}$.
 %    \item Naive Bayes, where $M = \{P(Y), P(X|Y)\}$, with $P(Y)$ being the prior probabilities of the classes in $Y$, and $P(X|Y)$ being the likelihood of the features in $X$ given the classes in $Y$.
 %\end{itemize}
-
-Since classes are balanced, but are composed of only a few samples, there's a risk of ill-defined metrics, as the model might not be able to predict some classes and not have a defined precision, recall or F1-score for those classes.
-Therefore, the weighted accuracy and the AUC (One-VS-Rest) will be used as performance indexes.
-
-
-
+Since classes are relatively balanced, but are composed of only a few samples, there's a risk of ill-defined metrics, 
+as the model might not be able to predict some classes and might not have a properly defined precision, recall or F1-score for those classes.
+Therefore, the weighted accuracy and the AUC (OvR) will be used as performance indexes. 
+The confusion matrices and the multiclass ROC (OvR)$^{\cite{multiclass_roc}}$ will also be plotted to better understand the models' performances.
 
 
 \section{Proposed solution}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
+\subsection{Data pre-processing}
+In order to have any sort of meaningful evaluation of the models, the dataset $D$ has to be split into a training set $D_{\text{train}}$ and a test set $D_{\text{test}}$, 
+in order to test the models for generalization on unseen data:
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
+\begin{equation*}
+    D_{\text{train}} = subbag(D, r) \quad \text{and} \quad D_{\text{test}} = D \setminus D_{\text{train}}
+\end{equation*}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
+The split will be done with a $80$-$20\%$ ratio (r = 0.8) using a stratified shuffle, in order to avoid misrepresentation of classes:
 
+\begin{equation*}
+    \frac{|\{(x_{i}, y_{i}) \in D_{\text{train}} : y_{i} = c\}|}{|D_{\text{train}}|} \approx \frac{|\{(x_{i}, y_{i}) \in D_{\text{test}} : y_{i} = c\}|}{|D_{\text{test}}|}, \quad \forall c \in Y
+\end{equation*}
+
+\subsection{Types of models}
+For this project, three different kinds of models will be trained, in order to determine which one performs best for the problem at hand:
+\begin{itemize}
+    \item \textbf{Random Forest}, $M = \{T_1, T_2,... T_n\}$ with each $T_i \in T_{(\{1,...,4\}\times\mathbb{R})\cup P_{Y}}$
+    \item \textbf{Support Vector Classifier}, $M = \{w, b\}$ such that $w \in \mathbb{R}^{14}$ and $b \in \mathbb{R}$.
+    \item \textbf{Naive Bayes}, $M = \{P(Y), P(X|Y)\}$, with $P(Y)$ being the prior probabilities of the classes in $Y$, and $P(X|Y)$ being the likelihood of the features in $X$ given the classes in $Y$.
+\end{itemize}
+One thing to note is that, normally, multiclass SVCs do not output probabilities.
+Therefore, the SVC will be used in conjunction with Platt scaling$^{\cite{platt1999probabilistic}\cite{wu2003probability}}$, in order to follow the formal definition of the problem of outputting probability distributions and calculate the multiclass ROC and AUC.
 
 
 \section{Experimental evaluation}
@@ -238,6 +215,6 @@ Duis faucibus vulputate mauris, eu viverra elit mattis vel.
 
 
 \bibliographystyle{plain}
-\bibliography{bibliography}
+\bibliography{references}
 
 \end{document}

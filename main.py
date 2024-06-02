@@ -2,7 +2,7 @@
 #   Code for the "Introduction to Machine Learning and Evolutonary Robotics" project.
 #
 from utils.data_utils import load_data, split_data
-from utils.plot_utils import plot_confusion_matrix
+from utils.plot_utils import plot_confusion_matrix, plot_n_confusion_matrices, plot_roc_curve
 from utils.training_utils import grid_search, cross_validate, train_model, test_model
 
 import numpy as np
@@ -28,6 +28,8 @@ def training_script(verbose=False):
 
     X, y = load_data("dataset/leaf.csv")
     x_train, x_test, y_train, y_test = split_data(X, y, test_size=TEST_RATIO, random_state=SEED)
+
+    cm_list = []
     
     for model_name, model_params in zip(["RandomForest", "SVC", "NaiveBayes"], [RANDOM_FOREST_PARAMS, SVC_PARAMS, NB_PARAMS]):
         
@@ -42,12 +44,18 @@ def training_script(verbose=False):
             print(f"Average {model_name} Accuracy: {best_nb[0]}")
         
         model = train_model(model_name, best_params, x_train, y_train)
-        accuracy, cm, report, auc = test_model(model, x_test, y_test)
+        accuracy, cm, report, auc, fpr, tpr = test_model(model, x_test, y_test)
         print(f"{model_name} weighted Accuracy: {accuracy}")
         if verbose:
             print(f"{model_name} Classification Report:\n {report}")
         print(f"{model_name} AUC: {auc}")
-        plot_confusion_matrix(cm, n_classes=30, plot_name=model_name)
+        plot_confusion_matrix(cm, n_classes=30, plot_name=model_name, compact=True)
+        plot_roc_curve(fpr, tpr, plot_name=model_name, compact=True)
+        cm_list.append(cm)
+
+    plot_n_confusion_matrices(cm_list, ["RandomForest", "SVC", "NaiveBayes"], n_classes=30, compact=True)
+
+
 
 def main():
     random.seed(SEED)

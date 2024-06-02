@@ -1,12 +1,14 @@
 from sklearn.base import BaseEstimator
 
+from sklearn.preprocessing import label_binarize
+
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_val_score
 
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve, auc, roc_auc_score
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
@@ -20,7 +22,7 @@ def get_rf():
     return RandomForestClassifier(max_features=4, random_state=SEED)
 
 def get_svc():
-    return SVC(probability=True, random_state=SEED)
+    return SVC(probability=True, random_state=SEED, decision_function_shape="ovr")
 
 def get_nb():
     return GaussianNB()
@@ -47,8 +49,19 @@ def test_model(model : BaseEstimator, X, y):
 
     y_pred_proba = model.predict_proba(X)
     auc_roc = roc_auc_score(y, y_pred_proba, multi_class="ovr")
+
+    y_bin = label_binarize(y, classes=list(range(30)))
+
+    # Compute ROC curve for each class
+    fpr = dict()
+    tpr = dict()
+    for i in range(30):
+        fpr[i], tpr[i], _ = roc_curve(y_bin[:, i], y_pred_proba[:, i])
+
+    # Compute micro-average ROC curve and ROC area
+    fpr["micro"], tpr["micro"], _ = roc_curve(y_bin.ravel(), y_pred_proba.ravel())
     
-    return (accuracy, cm, report, auc_roc)
+    return (accuracy, cm, report, auc_roc, fpr, tpr)
 
 def cross_validate(model_name : Literal["RandomForest", "SVC", "NaiveBayes"], X, y, cv_folds=5):
     if model_name not in MODELS:
