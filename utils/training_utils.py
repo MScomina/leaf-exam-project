@@ -74,6 +74,6 @@ def grid_search(model_name : Literal["RandomForest", "SVC", "NaiveBayes"], param
     if model_name not in MODELS:
         raise ValueError(f"Model {model_name} not found in MODELS.")
     model = MODELS[model_name]()
-    grid_search = GridSearchCV(model, params, n_jobs=-1, cv=cv_folds)
+    grid_search = GridSearchCV(model, params, n_jobs=-1, cv=cv_folds, scoring="roc_auc_ovr")
     grid_search.fit(X, y)
     return (grid_search.best_estimator_, grid_search.best_params_, grid_search.best_score_) 

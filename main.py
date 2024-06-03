@@ -41,7 +41,8 @@ def training_script(verbose=False):
         else:
             best_params = {}
             best_nb = cross_validate(model_name, x_train, y_train, cv_folds=CV_FOLDS)
-            print(f"Average {model_name} Accuracy: {best_nb[0]}")
+            if verbose:
+                print(f"Average {model_name} Accuracy: {best_nb[0]}")
         
         model = train_model(model_name, best_params, x_train, y_train)
         accuracy, cm, report, auc, fpr, tpr = test_model(model, x_test, y_test)
