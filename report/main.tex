@@ -87,12 +87,12 @@ Therefore, the SVC will be used in conjunction with Platt scaling$^{\cite{platt1
 
 
 \subsection{Model training}
-The hyperparameters will first be searched for each model using a grid search with a $5$-fold cross-validation on the training set\footnote{...if applicable.}:
+The hyperparameters will first be searched for each model using a grid search with a $k$-fold cross-validation on the training set\footnote{...if applicable.}:
 \begin{equation*}
     P^{*} = 
     (p_{1}^{*}, p_{2}^{*}, \dots, p_{h}^{*}) = 
     \underset{p_{1}, p_{2}, \dots, p_{h}}{\text{argmax}}
-        \left(\frac{1}{5}\sum_{i=1}^{5}\text{AUC}_{\text{OvR}}
+        \left(\frac{1}{k}\sum_{i=1}^{k}\text{AUC}_{\text{OvR}}
             (M(p_{1}, p_{2}, \dots, p_{h}), 
             D_{\text{train}}^{(i)})
         \right)
@@ -109,99 +109,98 @@ The models will then be trained on the entire training set with the best hyperpa
 
 
 \subsection{Data}
-The dataset used for this project is the "leaf" dataset\footnote{https://archive.ics.uci.edu/dataset/288/leaf}, which comprises of 340 samples of simple leaves, evenly distributed among 30 classes.
+The dataset used for this project is the "leaf" dataset\footnote{https://archive.ics.uci.edu/dataset/288/leaf}, 
+which comprises of 340 samples of simple leaves, evenly distributed among the 30 classes.
 
 
 
 \subsection{Procedure}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
+The models will be searched for the best hyperparameters using a grid search, with a $5$-fold cross-validation on the training set.
+They will then be trained with the found hyperparameters and evaluated using the performance indexes mentioned in the previous section, and the results will be compared to determine which model performs best for the problem at hand.
+The chosen values for the hyperparameters are as follows:
+\begin{itemize}
+    \item \textbf{Random Forest}: 
+    \begin{description}
+        \item[$n_{\text{estimators}}$:] $\{10, 25, 50, 100, 200, 500, 1000\}$
+        \item[$T_{\text{max\_depth}}$:] $\{1, 3, 5, 10, 15, 25, 50\}$
+    \end{description}
+    \item \textbf{Soft SVC}: 
+    \begin{description}
+        \item[$C$:] $\{0.1, 0.5, 1, 10, 100, 1000, 10000, 100000\}$
+        \item[$K(x, x')$:] $\{\langle x, x' \rangle, (\gamma \langle x, x' \rangle)^3, \exp(-\gamma ||x-y||^2), \tanh(\gamma\langle x, x' \rangle)\}$\footnote{Respectively, the linear, polynomial, RBF and sigmoid kernels.}
+        \item[$\gamma$:] $\{1, \frac{1}{n_{\text{features}}}, \frac{1}{n_{\text{features}} \cdot \text{Var}(X)}\}$
+    \end{description}
+\end{itemize}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
-
+\newpage
 
 
 \subsection{Results and discussion}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
+The results of the grid search are as follows:
 
-\begin{table}[]
+\begin{table}[h]
     \centering
-    \begin{tabular}{
-        c S[table-format = 3.0] |
-        S[table-format = 1.2] S[table-format = 1.2] S[table-format = 4.0] S[table-format = 1.2] S[table-format = 4]
-    }
+    \begin{tabular}{c|c|c}
         \toprule
-        {$n_\text{this}$} & {$n_\text{that}$} & {LF} & {TF} & {\#I} & {\#S [$\times 10^6$]} & {$t_l$ [\si{\second}]}\\
+        Model & Hyperparameters & $T_{\text{search}}$ [ms] \\
         \midrule
-        \multirow{3}{*}{50}
-        & 10 & 0.37 & 0.45 & 552 & 0.59 & 52 \\
-        & 25 & 0.43 & 0.44 & 3076 & 0.56 & 245 \\
-        & 50 & 0.45 & 0.43 & 637 & 0.64 & 715 \\
-        \midrule
-        \multirow{3}{*}{100}
-        & 10 & 0.34 & 0.50 & 1138 & 2.76 & 110 \\
-        & 25 & 0.40 & 0.48 & 1224 & 0.94 & 326 \\
-        & 50 & 0.38 & 0.49 & 443 & 0.44 & 1056 \\
+        Random Forest & $n_{\text{estimators}} = 200, T_{\text{max\_depth}} = 10$ & 9879 \\
+        Soft SVC & $C = 10000, K(x, x') = \textbf{RBF}, \gamma = \frac{1}{n_{\text{features}}}$ & 1615 \\
         \bottomrule
     \end{tabular}
     \caption{
-        Results (including learning time $t_l$) for different values of $n_\text{this}$ and $n_\text{that}$.
+        Best hyperparameters found during the grid search.
     }
-    \label{tab:experiments}
+    \label{tab:hyperparameters}
 \end{table}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Donec euismod nibh vitae elit dignissim, a maximus justo mattis.
-Cras elementum dolor at volutpat lacinia.
-Duis a magna tempus, lobortis arcu eget, blandit augue.
-Nulla facilisi.
-Sed nibh lorem, tempus eget pellentesque vel, sagittis id quam.
-Mauris interdum faucibus vulputate.
-Nunc a ex tincidunt, scelerisque turpis a, dictum metus.
-Nunc nec dui dui.
-Ut mollis massa ligula, at pretium nibh tristique at.
-Mauris suscipit fermentum congue.
-Vivamus in auctor nibh.
-Vestibulum magna nisl, blandit luctus eleifend vitae, pharetra et ipsum.
-Duis faucibus vulputate mauris, eu viverra elit mattis vel.
+The models are then trained on the entire training set and evaluated on the test set, with the following results (averaged over 50 runs):
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|c|c|c}
+        \toprule
+        Model & Weighted accuracy & $\text{AUC}_{\text{OvR}}$ & $T_{\text{train}}$ [ms] & $T_{\text{test}}$ [ms] \\
+        \midrule
+        Random Forest & 78.1\% & 0.9864 & 283.6 & 28.9 \\
+        Soft SVC & 70.6\% & 0.9706 & 30.2 & 17.9 \\
+        Naive Bayes & 74.4\% & 0.9791 & 1.2 & 15.3 \\
+        \bottomrule
+    \end{tabular}
+    \caption{
+        Results of the models on the test set.
+    }
+    \label{tab:results}
+\end{table}
+
+The confusion matrices and ROC curves of the models are as follows:
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.735\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{confusion_matrices.png}
+        \label{fig:confusion_matrices}
+    \end{minipage}\hfill
+    \begin{minipage}{0.265\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{roc_curves.png}
+        \label{fig:roc_curves}
+    \end{minipage}
+    \caption{
+        Confusion matrices and ROC curves of the models.
+    }
+    \label{fig:results}
+\end{figure}
+
+The Random Forest model appears to be the best performing one for the "leaf" dataset, with the highest weighted accuracy and AUC,
+at the cost of an expensive grid search and higher training and prediction times. It is, therefore, the recommended model when 
+there isn't a strict constraint on the computational resources and when the highest performance is required.\\
+The Naive Bayes model, with slightly lower performance indexes when compared to the Random Forest model,
+but with a much lower training and prediction times and no need for grid search, is a good choice when
+the computational resources are limited or when training time is a critical factor.\\
+The Soft SVC model, instead, doesn't seem to perform as well as the other two models, with the lowest weighted accuracy and AUC,
+and a relatively high training time compared to the Naive Bayes model. It is, therefore, the least recommended model for the "leaf" dataset.
 
 
 

@@ -18,13 +18,13 @@ from typing import Literal, Callable
 
 SEED = 314
 
-def get_rf():
-    return RandomForestClassifier(max_features=4, random_state=SEED)
+def get_rf(seed=SEED):
+    return RandomForestClassifier(max_features=4, random_state=seed)
 
-def get_svc():
-    return SVC(probability=True, random_state=SEED, decision_function_shape="ovr")
+def get_svc(seed=SEED):
+    return SVC(probability=True, random_state=seed, decision_function_shape="ovr")
 
-def get_nb():
+def get_nb(seed=SEED):
     return GaussianNB()
 
 MODELS : dict[str, Callable[[], BaseEstimator]] = {
@@ -33,10 +33,10 @@ MODELS : dict[str, Callable[[], BaseEstimator]] = {
     "NaiveBayes": get_nb
 }
 
-def train_model(model_name : Literal["RandomForest", "SVC", "NaiveBayes"], params : dict, X, y) -> BaseEstimator:
+def train_model(model_name : Literal["RandomForest", "SVC", "NaiveBayes"], params : dict, X, y, seed=SEED) -> BaseEstimator:
     if model_name not in MODELS:
         raise ValueError(f"Model {model_name} not found in MODELS.")
-    model = MODELS[model_name]()
+    model = MODELS[model_name](seed=seed)
     model.set_params(**params)
     model.fit(X, y)
     return model
@@ -70,10 +70,10 @@ def cross_validate(model_name : Literal["RandomForest", "SVC", "NaiveBayes"], X,
     scores = cross_val_score(model, X, y, n_jobs=-1, cv=cv_folds)
     return scores.mean(), scores.std()
 
-def grid_search(model_name : Literal["RandomForest", "SVC", "NaiveBayes"], params : dict, X, y, cv_folds=5):
+def grid_search(model_name : Literal["RandomForest", "SVC", "NaiveBayes"], params : dict, X, y, cv_folds=5, seed=SEED):
     if model_name not in MODELS:
         raise ValueError(f"Model {model_name} not found in MODELS.")
-    model = MODELS[model_name]()
+    model = MODELS[model_name](seed=seed)
     grid_search = GridSearchCV(model, params, n_jobs=-1, cv=cv_folds, scoring="roc_auc_ovr")
     grid_search.fit(X, y)
     return (grid_search.best_estimator_, grid_search.best_params_, grid_search.best_score_) 

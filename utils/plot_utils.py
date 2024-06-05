@@ -76,3 +76,23 @@ def plot_roc_curve(fpr, tpr, plot_name : str = None, figsize = (10,7), fontsize=
         plt.savefig(f'plots/roc_{plot_name.lower().replace(" ", "_")}.png')
     else:
         plt.show()
+    plt.close()
+
+def plot_n_roc_curves(fpr_list, tpr_list, plot_names : list[str], figsize = (10,7), fontsize=10, compact=False):
+    if len(fpr_list) != len(tpr_list) or len(fpr_list) != len(plot_names):
+        raise ValueError("Number of FPR, TPR lists and plot names must be equal.")
+    if compact and figsize == (10,7):
+        figsize = (7, 7)
+    fig = plt.figure(figsize=figsize)
+    for fpr, tpr, plot_name in zip(fpr_list, tpr_list, plot_names):
+        plt.plot(fpr["micro"], tpr["micro"], lw=2, label=plot_name)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate', fontsize=fontsize)
+    plt.ylabel('True Positive Rate', fontsize=fontsize)
+    plt.title('Receiver Operating Characteristic', fontsize=fontsize)
+    plt.legend(loc="lower right", fontsize=fontsize)
+    os.makedirs('plots', exist_ok=True)
+    plt.savefig(f'plots/roc_curves.png')
+    plt.close(fig)
