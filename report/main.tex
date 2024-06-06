@@ -170,9 +170,9 @@ The models are then trained on the entire training set and evaluated on the test
         \toprule
         Model & Weighted accuracy & $\text{AUC}_{\text{OvR}}$ & $T_{\text{train}}$ [ms] & $T_{\text{test}}$ [ms] \\
         \midrule
-        Random Forest & 78.4\% & \textbf{0.9862} & 288.4 & 28.4 \\
-        Soft SVC & \textbf{82.2\%} & 0.9823 & 25.1 & 16.2 \\
-        Naive Bayes & 74.4\% & 0.9791 & \textbf{1.2} & \textbf{15.3} \\
+        Random Forest & 77.2\% & \textbf{0.9858} & 282.0 & 27.2 \\
+        Soft SVC & \textbf{77.4\%} & 0.9852 & 25.5 & 16.2 \\
+        Naive Bayes & 73.6\% & 0.9757 & \textbf{0.8} & \textbf{14.7} \\
         \bottomrule
     \end{tabular}
     \caption{
@@ -201,7 +201,7 @@ The confusion matrices and ROC curves of the models are as follows:
     \label{fig:results}
 \end{figure}
 
-All models score a weighted accuracy of at least 74.4\%, which is a significant result compared to the random classification baseline of $\approx 3.3\%$.\\
+All models score a weighted accuracy of at least 70\%, which is a significant result compared to the random classification baseline of $\approx 3.3\%$.\\
 Both the Random Forest and the Soft SVC models perform very well on the test set, 
 with both of them outperforming each other in at least one of the performance indexes.\\
 The SVC, however, shows to have another advantage over the Random Forest, which is faster training and testing times. 

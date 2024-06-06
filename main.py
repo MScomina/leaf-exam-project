@@ -25,7 +25,7 @@ NB_PARAMS = {}
 CV_FOLDS = 5
 TEST_RATIO = 0.2
 SEED = 314
-N_TESTINGS = 20
+N_TESTINGS = 50
 
 def training_script(verbose=False):
 
@@ -39,6 +39,8 @@ def training_script(verbose=False):
     fpr_list = []
     
     for model_name, model_params in zip(["RandomForest", "SVC", "NaiveBayes"], [RANDOM_FOREST_PARAMS, SVC_PARAMS, NB_PARAMS]):
+
+        x_train, x_test, y_train, y_test = split_data(X, y, test_size=TEST_RATIO, random_state=SEED)
         
         print(f"Training {model_name}")
         if model_name != "NaiveBayes":
@@ -58,6 +60,7 @@ def training_script(verbose=False):
         avg_test_time = 0
 
         for k in range(N_TESTINGS):
+            x_train, x_test, y_train, y_test = split_data(X, y, test_size=TEST_RATIO, random_state=SEED+k)
             timer = time.time()
             model = train_model(model_name, best_params, x_train, y_train, seed=SEED+k)
             train_time = time.time() - timer
