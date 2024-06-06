@@ -91,7 +91,7 @@ def plot_n_roc_curves(fpr_list, tpr_list, plot_names : list[str], figsize = (10,
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate', fontsize=fontsize)
     plt.ylabel('True Positive Rate', fontsize=fontsize)
-    plt.title('Receiver Operating Characteristic', fontsize=fontsize)
+    plt.title('Receiver Operating Characteristic (micro-averaged)', fontsize=fontsize)
     plt.legend(loc="lower right", fontsize=fontsize)
     os.makedirs('plots', exist_ok=True)
     plt.savefig(f'plots/roc_curves.png')

@@ -3,6 +3,7 @@ import pickle
 
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
 
 from sklearn.model_selection import train_test_split
 
@@ -50,5 +51,12 @@ def load_model(file_path) -> BaseEstimator:
         model = pickle.load(f)
     return model
 
-def split_data(X, y, test_size=0.2, random_state=None):
-    return train_test_split(X, y, test_size=test_size, stratify=y, random_state=random_state)
+def split_data(X, y, test_size=0.2, random_state=None, standardize=True):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, stratify=y, random_state=random_state)
+
+    if standardize:
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.transform(X_test)
+
+    return X_train, X_test, y_train, y_test
