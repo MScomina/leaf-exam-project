@@ -33,14 +33,14 @@
 \section{Problem statement}
 \subsection{Goal of the project}
 The goal of this project is to identify the type of leaf based on a group of features, which are derived from both their shape and texture.
-The given solution must be able to classify the leaves in one of 30 categories of leaves.
+The given solution must be able to classify the leaves in one of 30 species.
 
 \subsection{Formal definitions}
 The problem can be formally defined as follows:
 \begin{itemize}
     \item Let $X$ be the set of all possible leaves. Each element $x \in X$ is a leaf defined by a 14-dimensional attribute vector, representing various shape and texture features of the leaf.
-    \item Let $Y$ be the set of all possible categories of leaves. Each element $y \in Y = \{0, 1, 2, \ldots, 29\}$ represents a unique category of leaves.
-    \item Let $f: X \to Y$ be the function that assigns each leaf to its category based on its attributes.
+    \item Let $Y$ be the set of all possible species of leaves. Each element $y \in Y = \{0, 1, 2, \ldots, 29\}$ represents a unique species of leaves.
+    \item Let $f: X \to Y$ be the function that assigns each leaf to its correct species based on its attributes.
     \item Let $D = \{(x^{(1)}, y^{(1)}), \ldots, (x^{(n)}, y^{(n)})\}$ be the dataset, where $x^{(i)} \in X$ and $y^{(i)} \in Y$.
     \item The goal is to learn a model $M$ from the dataset $D$ such that the $\operatorname{argmax}$ of $f'_{\text{predict}}: X \times M \to P_{Y}$\footnote{...where $P_{Y}$ is the set of all possible probability distributions over $Y$.} approximates $f$ as closely as possible, effectively classifying the leaves into their correct categories.
 \end{itemize}
